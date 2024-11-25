@@ -72,7 +72,10 @@ def handle_user_info(request, access_token):
         profile_image = user_info.get("kakao_account", {}).get("profile", {}).get("profile_image_url", "")
         thumbnail_image = user_info.get("kakao_account", {}).get("profile", {}).get("thumbnail_image_url", "")
 
-        print(f"Kakao ID: {kakao_id}, Email: {email}, Nickname: {nickname}, Profile Image: {profile_image}, Thumbnail Image: {thumbnail_image}")  # 디버깅
+        print(f"Kakao ID: {kakao_id}, Email: {email}, Nickname: {nickname}, Profile Image: {profile_image}, Thumbnail Image: {thumbnail_image}")
+
+        User.nickname = nickname
+        User.profile_image = thumbnail_image
 
         return render(request, 'accounts/login_success.html', {
             "profile": user_info,
