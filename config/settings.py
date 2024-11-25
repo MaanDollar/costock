@@ -41,6 +41,7 @@ INSTALLED_APPS = [
     'django.contrib.sites',
     'accounts.apps.AccountsConfig',
     'stock.apps.StockConfig',
+    'AI_recommendation.apps.AirecommendationConfig',
     'allauth',
     'allauth.account',
     'allauth.socialaccount',
