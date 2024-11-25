@@ -2,11 +2,62 @@
 <html>
 <head>
     <title>Login Success</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            text-align: center;
+        }
+        .profile {
+            margin-top: 20px;
+        }
+        .profile img {
+            border-radius: 50%;
+            width: 150px;
+            height: 150px;
+        }
+        .profile h1 {
+            font-size: 24px;
+            margin: 10px 0;
+        }
+        .profile p {
+            font-size: 18px;
+            color: #555;
+        }
+        .logout {
+            margin-top: 20px;
+        }
+        .logout button {
+            font-size: 16px;
+            padding: 10px 20px;
+            background-color: #f44336;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        .logout button:hover {
+            background-color: #d32f2f;
+        }
+    </style>
 </head>
 <body>
     <h1>카카오 로그인 성공!</h1>
-    <p><strong>닉네임:</strong> {{ nickname }}</p>
-    <p><strong>이메일:</strong> {{ email }}</p>
-    <p><strong>전체 프로필 데이터:</strong> {{ profile }}</p>
+    <div class="profile">
+        {% if profile_image %}
+            <img src="{{ profile_image }}" alt="Profile Image">
+        {% else %}
+            <p>No profile image available</p>
+        {% endif %}
+        <h1>{{ nickname }}</h1>
+        <p>Email: {{ email }}</p>
+    </div>
+
+    <div class="logout">
+        <form action="{% url 'logout' %}" method="post">
+            {% csrf_token %}
+            <button type="submit">로그아웃</button>
+        </form>
+    </div>
 </body>
 </html>

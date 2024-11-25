@@ -5,8 +5,6 @@ import requests
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 import json
-import urllib.parse
-
 
 def index(request):
     return render(request, 'accounts/login.html')
@@ -31,12 +29,8 @@ def kakao_callback(request):
         "Content-type": "application/x-www-form-urlencoded;charset=utf-8",
     }
 
-    encoded_data = urllib.parse.urlencode(data).encode("utf-8")
-    print("Encoded Data:", encoded_data)
-    print("Headers:", headers)
-
     try:
-        response = requests.post(token_url, data=encoded_data, headers=headers)
+        response = requests.post(token_url, data=data, headers=headers)
         print("Token Request Response:", response.status_code, response.text)  # 디버깅
 
         # 3. 응답 상태 확인
@@ -60,11 +54,9 @@ def kakao_callback(request):
         return render(request, 'accounts/login_failed.html', {"error": "Failed to connect to Kakao API"})
 
 
-
-
 def handle_user_info(request, access_token):
     """
-    카카오 사용자 정보 처리.
+    카카오 사용자 정보 처리 (프로필 사진 포함).
     """
     profile_url = "https://kapi.kakao.com/v2/user/me"
     headers = {
@@ -85,17 +77,40 @@ def handle_user_info(request, access_token):
         kakao_id = user_info.get("id")
         email = user_info.get("kakao_account", {}).get("email", "No email provided")
         nickname = user_info.get("kakao_account", {}).get("profile", {}).get("nickname", "No nickname")
+        profile_image = user_info.get("kakao_account", {}).get("profile", {}).get("profile_image_url", "")
+        thumbnail_image = user_info.get("kakao_account", {}).get("profile", {}).get("thumbnail_image_url", "")
 
-        print(f"Kakao ID: {kakao_id}, Email: {email}, Nickname: {nickname}")  # 디버깅
+        print(f"Kakao ID: {kakao_id}, Email: {email}, Nickname: {nickname}, Profile Image: {profile_image}, Thumbnail Image: {thumbnail_image}")  # 디버깅
 
         # 성공 페이지로 이동
         return render(request, 'accounts/login_success.html', {
             "profile": user_info,
             "nickname": nickname,
             "email": email,
+            "profile_image": profile_image,
+            "thumbnail_image": thumbnail_image,
         })
 
     except requests.RequestException as e:
         print(f"RequestException occurred while fetching user info: {str(e)}")
         return render(request, 'accounts/login_failed.html', {"error": "Failed to connect to Kakao API"})
 
+def kakao_logout(request):
+    """
+    카카오 로그아웃 처리 함수
+    """
+    rest_api = getattr(settings, 'KAKAO_REST_API_KEY')
+    logout_redirect_uri = getattr(settings, 'KAKAO_LOGOUT_REDIRECT_URI')  # 로그아웃 후 리다이렉트 URI
+
+    # 1. 사용자 로그아웃 (서버 토큰 로그아웃)
+    access_token = request.session.get('access_token')  # 세션에서 토큰 가져오기
+    if access_token:
+        headers = {"Authorization": f'Bearer {access_token}'}
+        logout_response = requests.post('https://kapi.kakao.com/v1/user/logout', headers=headers)
+        print("User Logout Response:", logout_response.json())
+
+    # 2. 카카오 계정 로그아웃 (카카오 로그인 창 로그아웃)
+    kakao_account_logout_url = (
+        f'https://kauth.kakao.com/oauth/logout?client_id={rest_api}&logout_redirect_uri={logout_redirect_uri}'
+    )
+    return redirect(kakao_account_logout_url)

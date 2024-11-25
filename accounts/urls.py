@@ -6,4 +6,5 @@ urlpatterns = [
     path('', views.index),
     path('accounts/kakao/login/callback/', views.kakao_callback),
     path('accounts/', include('allauth.urls')),
+    path('logout/', views.kakao_logout, name='logout'),
 ]
