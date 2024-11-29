@@ -59,7 +59,7 @@ LOGIN_REDIRECT_URL = 'https://maandollar-client.vercel.app/dashboard'
 ACCOUNT_LOGOUT_REDIRECT_URL = 'http://127.0.0.1:8000/accounts/'
 ACCOUNT_LOGOUT_ON_GET = True
 KAKAO_REST_API_KEY = '38fdf57d29bb0dab0cee3bb58e9fd592'
-KAKAO_REDIRECT_URI = 'http://127.0.0.1:8000/accounts/kakao/login/callback/'
+KAKAO_REDIRECT_URI = 'http://costockco.com/api/auth/kakao/login/callback/'
 KAKAO_LOGOUT_REDIRECT_URI = 'http://127.0.0.1:8000/'
 
 MIDDLEWARE = [
