@@ -29,6 +29,10 @@ ALLOWED_HOSTS = []
 
 SITE_ID = 3
 
+# CORS 허용 설정
+CORS_ALLOW_ALL_ORIGINS = True  # 모든 도메인 허용 (배포 시 보안적으로 제한 필요)
+
+
 # Application definition
 
 INSTALLED_APPS = [
@@ -41,11 +45,12 @@ INSTALLED_APPS = [
     'django.contrib.sites',
     'accounts.apps.AccountsConfig',
     'stock.apps.StockConfig',
-    'AI_recommendation.apps.AirecommendationConfig',
+    'AI_recommendation.apps.AiRecommendationConfig',
     'allauth',
     'allauth.account',
     'allauth.socialaccount',
     'allauth.socialaccount.providers.kakao',
+    'corsheaders',
 ]
 
 
@@ -66,6 +71,8 @@ MIDDLEWARE = [
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
     'allauth.account.middleware.AccountMiddleware',
+    'corsheaders.middleware.CorsMiddleware',
+    *MIDDLEWARE,
 ]
 
 ROOT_URLCONF = "config.urls"

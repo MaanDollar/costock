@@ -1,5 +1,6 @@
 from django.shortcuts import render, redirect
 from django.conf import settings
+from django.http import JsonResponse
 from .models import User
 import requests
 
@@ -77,13 +78,13 @@ def handle_user_info(request, access_token):
         User.nickname = nickname
         User.profile_image = thumbnail_image
 
-        return render(request, 'accounts/login_success.html', {
-            "profile": user_info,
+        user_info = {
             "nickname": nickname,
             "email": email,
-            "profile_image": profile_image,
-            "thumbnail_image": thumbnail_image,
-        })
+            "profile_image": thumbnail_image
+        }
+
+        return JsonResponse({"status": "success", "data": user_info})
 
     except requests.RequestException as e:
         print(f"RequestException occurred while fetching user info: {str(e)}")
