@@ -72,7 +72,6 @@ MIDDLEWARE = [
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
     'allauth.account.middleware.AccountMiddleware',
     'corsheaders.middleware.CorsMiddleware',
-    *MIDDLEWARE,
 ]
 
 ROOT_URLCONF = "config.urls"

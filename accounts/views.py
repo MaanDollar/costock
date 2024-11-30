@@ -80,7 +80,6 @@ def handle_user_info(request, access_token):
 
         user_info = {
             "nickname": nickname,
-            "email": email,
             "profile_image": thumbnail_image
         }
 
