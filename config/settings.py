@@ -11,6 +11,10 @@ https://docs.djangoproject.com/en/5.1/ref/settings/
 """
 
 from pathlib import Path
+import os
+from dotenv import load_dotenv
+
+load_dotenv(verbose=True)
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -20,7 +24,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/5.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = "django-insecure-i62%&tf18bcyg5-gjpr=zoi)^*zwcfm+&%ub1s)6-n=zwh*)c8"
+SECRET_KEY = os.getenv("SECRET_KEY")
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -45,22 +49,22 @@ INSTALLED_APPS = [
     'django.contrib.sites',
     'accounts.apps.AccountsConfig',
     'stock.apps.StockConfig',
-    'ai.apps.AiRecommendationConfig',
+    'ai.apps.AiConfig',
     'allauth',
     'allauth.account',
     'allauth.socialaccount',
     'allauth.socialaccount.providers.kakao',
-    'corsheaders',
 ]
 
+MAIN_ENDPOINT = os.getenv("ENDPOINT")
 
 SOCIALACCOUNT_LOGIN_ON_GET = True
-LOGIN_REDIRECT_URL = 'https://maandollar-client.vercel.app/dashboard'
-ACCOUNT_LOGOUT_REDIRECT_URL = 'http://127.0.0.1:8000/accounts/'
+LOGIN_REDIRECT_URL = f'{MAIN_ENDPOINT}/dashboard'
+ACCOUNT_LOGOUT_REDIRECT_URL = f'{MAIN_ENDPOINT}/api/accounts/'
 ACCOUNT_LOGOUT_ON_GET = True
-KAKAO_REST_API_KEY = '38fdf57d29bb0dab0cee3bb58e9fd592'
-KAKAO_REDIRECT_URI = 'http://costockco.com/api/auth/kakao/login/callback/'
-KAKAO_LOGOUT_REDIRECT_URI = 'http://127.0.0.1:8000/'
+KAKAO_REST_API_KEY = os.getenv("KAKAO_REST_API_KEY")
+KAKAO_REDIRECT_URI = f'{MAIN_ENDPOINT}/api/auth/kakao/login/callback/'
+KAKAO_LOGOUT_REDIRECT_URI = MAIN_ENDPOINT
 
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
@@ -105,8 +109,11 @@ WSGI_APPLICATION = "config.wsgi.application"
 
 DATABASES = {
     "default": {
-        "ENGINE": "django.db.backends.sqlite3",
-        "NAME": BASE_DIR / "db.sqlite3",
+        "ENGINE": 'django.db.backends.mysql',
+        "HOST": os.getenv("DATABASE_HOST"),
+        "NAME": os.getenv("DATABASE_NAME"),
+        "USER": os.getenv("DATABASE_USER"),
+        "PASSWORD": os.getenv("DATABASE_PASSWORD"),
     }
 }
 
@@ -151,3 +158,4 @@ STATIC_URL = "static/"
 # https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
+
