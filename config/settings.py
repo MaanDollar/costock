@@ -78,6 +78,8 @@ MIDDLEWARE = [
     'corsheaders.middleware.CorsMiddleware',
 ]
 
+CSRF_TRUSTED_ORIGINS = ['https://costockco.com/']
+
 ROOT_URLCONF = "config.urls"
 
 AUTHENTICATION_BACKENDS = [
@@ -158,4 +160,3 @@ STATIC_URL = "static/"
 # https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
-
