@@ -17,7 +17,7 @@ jobs:
         uses: actions/checkout@v2
       - name: Make .env
         run: |
-          touch .env.local
+          touch .env
           echo SECRET_KEY="${{ secrets.SECRET_KEY }}" >> .env.local
           echo KAKAO_REST_API_KEY="${{ secrets.KAKAO_REST_API_KEY }}" >> .env.local
           echo DATABASE_HOST="${{ secrets.DATABASE_HOST }}" >> .env.local
@@ -52,7 +52,7 @@ jobs:
           ACTIONS_ALLOW_UNSECURE_COMMANDS: true
       - name: Make .env
         run: |
-          touch .env.local
+          touch .env
           echo SECRET_KEY="${{ secrets.SECRET_KEY }}" >> .env.local
           echo KAKAO_REST_API_KEY="${{ secrets.KAKAO_REST_API_KEY }}" >> .env.local
           echo DATABASE_HOST="${{ secrets.DATABASE_HOST }}" >> .env.local
