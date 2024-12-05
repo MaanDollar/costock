@@ -58,7 +58,7 @@ INSTALLED_APPS = [
 
 MAIN_ENDPOINT = os.getenv("ENDPOINT")
 
-LOGIN_URL = f'{MAIN_ENDPOINT}/api/auth/login/'
+LOGIN_URL = f'{MAIN_ENDPOINT}/api/auth/login/kakao/'
 SOCIALACCOUNT_LOGIN_ON_GET = True
 LOGIN_REDIRECT_URL = f'{MAIN_ENDPOINT}/dashboard'
 ACCOUNT_LOGOUT_REDIRECT_URL = f'{MAIN_ENDPOINT}/api/auth/kakao/login/callback/'
