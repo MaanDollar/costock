@@ -83,7 +83,8 @@ def handle_user_info(request, access_token):
             "profile_image": thumbnail_image
         }
 
-        return JsonResponse({"status": "success", "data": user_info})
+        #return JsonResponse({"status": "success", "data": user_info})
+        return render(request, 'accounts/login_success.html')
 
     except requests.RequestException as e:
         print(f"RequestException occurred while fetching user info: {str(e)}")
