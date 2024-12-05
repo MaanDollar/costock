@@ -80,6 +80,8 @@ MIDDLEWARE = [
 
 CSRF_TRUSTED_ORIGINS = ['https://costockco.com/']
 
+SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
+
 ROOT_URLCONF = "config.urls"
 
 AUTHENTICATION_BACKENDS = [
