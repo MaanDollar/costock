@@ -61,10 +61,10 @@ MAIN_ENDPOINT = os.getenv("ENDPOINT")
 LOGIN_URL = f'{MAIN_ENDPOINT}/api/auth/login/'
 SOCIALACCOUNT_LOGIN_ON_GET = True
 LOGIN_REDIRECT_URL = f'{MAIN_ENDPOINT}/dashboard'
-ACCOUNT_LOGOUT_REDIRECT_URL = f'{MAIN_ENDPOINT}/api/auth/kakao/login/callback/'
+ACCOUNT_LOGOUT_REDIRECT_URL = f'{MAIN_ENDPOINT}/api/auth/login/'
 ACCOUNT_LOGOUT_ON_GET = True
 KAKAO_REST_API_KEY = os.getenv("KAKAO_REST_API_KEY")
-KAKAO_REDIRECT_URI = 'https://costockco.com/api/auth/kakao/login/callback/'
+KAKAO_REDIRECT_URI = f'{MAIN_ENDPOINT}/api/auth/kakao/login/callback/'
 KAKAO_LOGOUT_REDIRECT_URI = MAIN_ENDPOINT
 
 MIDDLEWARE = [
