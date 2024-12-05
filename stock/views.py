@@ -1,3 +1,4 @@
+from django.http import JsonResponse
 from django.shortcuts import render, redirect, get_object_or_404
 from django.conf import settings
 from .models import Owned, Recommended
@@ -15,8 +16,8 @@ def add_owned(request):
             quantity=int(quantity),
             price=float(price)
         )
+    return JsonResponse({'status': 'success', 'message': 'success'})
 
-    return render(request, 'accounts/login.html')
 
 def modify_owned(request, stock_id):
 
@@ -33,7 +34,7 @@ def modify_owned(request, stock_id):
         stock.price = float(price)
         stock.save()
 
-    return render(request, 'accounts/login.html', {'stock': stock})
+    return JsonResponse({'status': 'success', 'message': 'success'})
 
 def delete_owned(request):
     if request.method == 'POST':
@@ -51,7 +52,7 @@ def delete_owned(request):
             error_message = "해당 종목을 찾을 수 없습니다."
             return render(request, 'delete_stock.html', {'error': error_message})
 
-    return render(request, 'delete_stock.html')
+    return JsonResponse({'status': 'success', 'message': 'success'})
 
 def add_recommended(request):
     if request.method == 'POST':
@@ -65,7 +66,8 @@ def add_recommended(request):
             price=float(price)
         )
 
-    return render(request, 'accounts/login.html')
+    return JsonResponse({'status': 'success', 'message': 'success'})
+
 
 def delete_recommended(request):
     if request.method == 'POST':
@@ -83,7 +85,8 @@ def delete_recommended(request):
             error_message = "해당 종목을 찾을 수 없습니다."
             return render(request, 'delete_stock.html', {'error': error_message})
 
-    return render(request, 'accounts/login.html')
+    return JsonResponse({'status': 'success', 'message': 'success'})
+
 
 def modify_recommended(request, stock_id):
 
@@ -102,4 +105,5 @@ def modify_recommended(request, stock_id):
 
         return redirect('stock_list')
 
-    return render(request, 'accounts/login.html')
+    return JsonResponse({'status': 'success', 'message': 'success'})
+
