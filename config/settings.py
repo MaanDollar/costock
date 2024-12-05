@@ -66,6 +66,7 @@ ACCOUNT_LOGOUT_ON_GET = True
 KAKAO_REST_API_KEY = os.getenv("KAKAO_REST_API_KEY")
 KAKAO_REDIRECT_URI = 'http://costockco.com/api/auth/kakao/login/callback/'
 KAKAO_LOGOUT_REDIRECT_URI = MAIN_ENDPOINT
+ACCOUNT_SESSION_REMEMBER = False
 
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
