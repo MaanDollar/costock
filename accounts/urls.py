@@ -4,5 +4,6 @@ from . import views
 
 urlpatterns = [
     path('', include('allauth.urls')),
-    path('logout/', views.kakao_logout, name='logout'),
+    path('current_user/', views.current_user, name='current_user'),
+    path('kakao/logout/', views.kakao_logout, name='logout'),
 ]

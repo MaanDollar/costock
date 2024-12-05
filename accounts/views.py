@@ -7,6 +7,15 @@ import requests
 def index(request):
     return render(request, 'accounts/login.html')
 
+def current_user(request):
+    if not request.user.is_authenticated:
+        return JsonResponse({'username': None})
+    user = request.user
+    return JsonResponse({
+        'username': user.username,
+        'email': user.email,
+    })
+
 def kakao_logout(request):
     rest_api = getattr(settings, 'KAKAO_REST_API_KEY')
     logout_redirect_uri = getattr(settings, 'KAKAO_LOGOUT_REDIRECT_URI')
