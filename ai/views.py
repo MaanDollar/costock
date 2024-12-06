@@ -5,96 +5,71 @@ import requests
 import FinanceDataReader as fdr
 import matplotlib
 import matplotlib.pyplot as plt
-
 import io
-
 import base64
 matplotlib.use('Agg')
+from django.http import JsonResponse
+
+
 def price(request, stock_code):
-    # 주식 데이터를 동적으로 가져옴
     try:
+        # 주식 데이터를 동적으로 가져옴
         stock_df = fdr.DataReader(stock_code, '2023-06-01', '2024-07-26')
-    except Exception as e:
-        # 데이터를 가져오지 못했을 때 에러 처리
-        context = {
-            'error': f"Unable to fetch data for stock code: {stock_code}. Error: {str(e)}"
+
+        # 당일 마지막 가격과 가격 변화율 계산
+        latest_data = stock_df.iloc[-1]  # 마지막 행
+        close_price = latest_data['Close']  # 마지막 종가
+        change_rate = latest_data['Change'] * 100  # 변화율(%)
+
+        # Matplotlib 그래프 생성
+        plt.figure(figsize=(10, 6))
+        stock_df['Close'].plot(title=f'Stock Prices for {stock_code}')
+        plt.xlabel('Date')
+        plt.ylabel('Close Price')
+        plt.tight_layout()
+
+        # 그래프를 메모리에 저장
+        buffer = io.BytesIO()
+        plt.savefig(buffer, format='png')
+        buffer.seek(0)
+        plt.close()
+
+        # 그래프를 base64로 인코딩
+        graph_base64 = base64.b64encode(buffer.getvalue()).decode('utf-8')
+        buffer.close()
+
+        # JSON 데이터 생성
+        response_data = {
+            'stock_code': stock_code,
+            'close_price': close_price,
+            'change_rate': round(change_rate, 2),  # 소수점 2자리로 반올림
+            'graph': graph_base64,
         }
-        return render(request, 'ai/price_error.html', context)
 
-    # Matplotlib 그래프 생성
-    plt.figure(figsize=(10, 6))
-    stock_df['Close'].plot(title=f'Stock Prices for {stock_code}')
-    plt.xlabel('Date')
-    plt.ylabel('Close Price')
-    plt.tight_layout()
+        return JsonResponse(response_data)
 
-    # 그래프를 메모리에 저장
-    buffer = io.BytesIO()
-    plt.savefig(buffer, format='png')
-    buffer.seek(0)
-    plt.close()
+    except Exception as e:
+        # 에러 발생 시 JSON 에러 응답
+        return JsonResponse({
+            'error': f"Unable to fetch data for stock code: {stock_code}. Error: {str(e)}"
+        }, status=500)
 
-    # 그래프를 base64로 인코딩
-    graph_base64 = base64.b64encode(buffer.getvalue()).decode('utf-8')
-    buffer.close()
-
-    # 템플릿에 전달할 컨텍스트 데이터
-    context = {
-        'graph': graph_base64,
-        'stock_code': stock_code
-    }
-
-    return render(request, 'ai/price.html', context)
-
-
-
-
-def add_ai(request):
-    if request.method == 'POST':
-
-        name = request.POST.get('name')
-        quantity = request.POST.get('quantity')
-        price = request.POST.get('price')
-
-        Stock.objects.create(
-            name=name,
-            quantity=int(quantity),
-            price=float(price)
+def correlations(request, stock_code1, stock_code2):
+    try:
+        correlation = get_object_or_404(
+            StockCorrelation, StockCode=stock_code1, RelatedStockCode=stock_code2
         )
 
-    return render(request, 'accounts/login.html')
+        # JSON 응답 데이터 생성
+        response_data = {
+            "stock_code1": stock_code1,
+            "stock_code2": stock_code2,
+            "correlation": float(correlation.Correlation),
+        }
 
-def modify_ai(request, stock_id):
+        return JsonResponse(response_data)
 
-    stock = get_object_or_404(Stock, id=stock_id)
+    except Exception as e:
+        # 에러 발생 시 JSON 에러 메시지 반환
+        return JsonResponse({"error": str(e)}, status=400)
 
-    if request.method == 'POST':
-
-        name = request.POST.get('name')
-        quantity = request.POST.get('quantity')
-        price = request.POST.get('price')
-
-        stock.name = name
-        stock.quantity = int(quantity)
-        stock.price = float(price)
-        stock.save()
-
-    return render(request, 'accounts/login.html', {'stock': stock})
-
-def delete_ai(request):
-    if request.method == 'POST':
-
-        name = request.POST.get('name')
-        quantity = request.POST.get('quantity')
-        price = request.POST.get('price')
-
-        try:
-            stock = Stock.objects.get(name=name, quantity=quantity, price=price)
-            stock.delete()
-            return redirect('stock_list')
-        except Stock.DoesNotExist:
-
-            error_message = "해당 종목을 찾을 수 없습니다."
-            return render(request, 'delete_stock.html', {'error': error_message})
-
-    return render(request, 'delete_stock.html')
