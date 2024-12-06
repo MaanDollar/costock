@@ -11,10 +11,23 @@ def current_user(request):
     if not request.user.is_authenticated:
         return JsonResponse({'username': None})
     user = request.user
-    return JsonResponse({
-        'username': user.username,
-        'email': user.email,
-    })
+    #프로필 사진 가져오기
+    try:
+        kakao_account = user.socialaccount_set.filter(provider='kakao').first()
+        extra_data = kakao_account.extra_data if kakao_account else {}
+        profile_image = extra_data.get("kakao_account", {}).get("profile", {}).get("profile_image_url", "")
+    except Exception as e:
+        profile_image = ""
+    context = {
+        'nickname': user.username,
+        'profile_image': profile_image,
+    }
+    return render(request, 'login_success.html', context)
+    #return JsonResponse({
+    #    'username': user.username,
+    #    'email': user.email,
+    #    'profile_image': profile_image,
+    #})
 
 def kakao_logout(request):
     rest_api = getattr(settings, 'KAKAO_REST_API_KEY')
