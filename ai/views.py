@@ -104,3 +104,26 @@ def articles(request):
 
     except Exception as e:
         return JsonResponse({"error": str(e)}, status=500)
+
+#(주식 종목, 코드) 반환 함수
+def stock_list(request):
+    try:
+        krx_stocks = fdr.StockListing('KRX')
+
+        stocks = krx_stocks[['Name', 'Symbol']].to_dict('records')
+
+        '''
+        위 코드 형식
+        [
+            {'Name': '삼성전자', 'Symbol': '005930'},
+            {'Name': 'SK하이닉스', 'Symbol': '000660'},
+            {'Name': '현대차', 'Symbol': '005380'}
+            ...
+        ]
+        '''
+
+        return JsonResponse({'status': 'success', 'stocks': stocks})
+
+    except Exception as e:
+        # 에러 처리
+        return JsonResponse({'status': 'error', 'message': str(e)}, status=500)
