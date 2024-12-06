@@ -18,16 +18,13 @@ def current_user(request):
         profile_image = extra_data.get("kakao_account", {}).get("profile", {}).get("profile_image_url", "")
     except Exception as e:
         profile_image = ""
-    context = {
-        'nickname': user.username,
+
+
+    return JsonResponse({
+        'username': user.username,
+        'email': user.email,
         'profile_image': profile_image,
-    }
-    return render(request, 'login_success.html', context)
-    #return JsonResponse({
-    #    'username': user.username,
-    #    'email': user.email,
-    #    'profile_image': profile_image,
-    #})
+    })
 
 def kakao_logout(request):
     rest_api = getattr(settings, 'KAKAO_REST_API_KEY')
