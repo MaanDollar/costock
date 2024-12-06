@@ -70,6 +70,9 @@ KAKAO_REST_API_KEY = os.getenv("KAKAO_REST_API_KEY")
 KAKAO_REDIRECT_URI = 'http://costockco.com/api/auth/kakao/login/callback/'
 KAKAO_LOGOUT_REDIRECT_URI = MAIN_ENDPOINT
 
+NAVER_CLIENT_ID = os.getenv("NAVER_CLIENT_ID")
+NAVER_CLIENT_SECRET = os.getenv("NAVER_CLIENT_SECRET")
+
 
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",

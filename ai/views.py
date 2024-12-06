@@ -56,11 +56,21 @@ def price(request, stock_code):
 
 def correlations(request, stock_code1, stock_code2):
     try:
-        correlation = get_object_or_404(
-            StockCorrelation, StockCode=stock_code1, RelatedStockCode=stock_code2
-        )
+        correlation = StockCorrelation.objects.filter(
+            StockCode=stock_code1, RelatedStockCode=stock_code2
+        ).first()
 
-        # JSON 응답 데이터 생성
+        if not correlation:
+            correlation = StockCorrelation.objects.filter(
+                StockCode=stock_code2, RelatedStockCode=stock_code1
+            ).first()
+
+        if not correlation:
+            return JsonResponse(
+                {"error": f"No correlation found for {stock_code1} and {stock_code2}"},
+                status=404
+            )
+
         response_data = {
             "stock_code1": stock_code1,
             "stock_code2": stock_code2,
@@ -73,3 +83,46 @@ def correlations(request, stock_code1, stock_code2):
         # 에러 발생 시 JSON 에러 메시지 반환
         return JsonResponse({"error": str(e)}, status=400)
 
+def articles(request):
+    try:
+        ######practice####
+        stock_code1 = "005930"
+        stock_code2 = "000660"
+        search_query = f"{stock_code1} {stock_code2}"
+
+        api_url = "https://openapi.naver.com/v1/search/news.json"
+        headers = {
+            "X-Naver-Client-Id": settings.NAVER_CLIENT_ID,
+            "X-Naver-Client-Secret": settings.NAVER_CLIENT_SECRET,
+        }
+        params = {
+            "query": search_query,
+            "display": 10,
+            "sort": "date",
+        }
+
+        response = requests.get(api_url, headers=headers, params=params)
+        response.raise_for_status()
+
+        data = response.json()
+        article = [
+            {
+                "title": item["title"],
+                "link": item["link"],
+                "description": item["description"],
+                "pubDate": item["pubDate"],
+            }
+            for item in data.get("items", [])
+        ]
+
+        response_data = {
+            "stock_code1": stock_code1,
+            "stock_code2": stock_code2,
+            "articles": article,
+        }
+
+        #return JsonResponse(response_data)
+        return render(request, "ai/articles.html", response_data)
+
+    except Exception as e:
+        return JsonResponse({"error": str(e)}, status=500)
