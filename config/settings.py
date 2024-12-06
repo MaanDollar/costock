@@ -58,6 +58,7 @@ INSTALLED_APPS = [
 
 MAIN_ENDPOINT = os.getenv("ENDPOINT")
 
+ACCOUNT_SESSION_REMEMBER = False
 LOGIN_URL = f'{MAIN_ENDPOINT}/api/auth/kakao/login'
 SOCIALACCOUNT_LOGIN_ON_GET = True
 SOCIALACCOUNT_ONLY = True
@@ -68,7 +69,7 @@ ACCOUNT_LOGOUT_ON_GET = True
 KAKAO_REST_API_KEY = os.getenv("KAKAO_REST_API_KEY")
 KAKAO_REDIRECT_URI = 'http://costockco.com/api/auth/kakao/login/callback/'
 KAKAO_LOGOUT_REDIRECT_URI = MAIN_ENDPOINT
-ACCOUNT_SESSION_REMEMBER = False
+
 
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",

@@ -46,7 +46,6 @@ def delete_owned(request):
         try:
             stock = Owned.objects.get(name=name, quantity=quantity, price=price)
             stock.delete()
-            return redirect('stock_list')
         except Owned.DoesNotExist:
 
             error_message = "해당 종목을 찾을 수 없습니다."
@@ -79,7 +78,6 @@ def delete_recommended(request):
         try:
             stock = Recommended.objects.get(name=name, quantity=quantity, price=price)
             stock.delete()
-            return redirect('stock_list')
         except Recommended.DoesNotExist:
 
             error_message = "해당 종목을 찾을 수 없습니다."
