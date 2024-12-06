@@ -3,15 +3,49 @@ from django.conf import settings
 from .models import Stock, StockCorrelation
 import requests
 import FinanceDataReader as fdr
+import matplotlib
 import matplotlib.pyplot as plt
 
-def price(request):
-    naver_df = fdr.DataReader('035420', '2023-06-01', '2024-07-26')
+import io
 
-    naver_df['Close'].plot(title='NAVER Stock Prices')
+import base64
+matplotlib.use('Agg')
+def price(request, stock_code):
+    # 주식 데이터를 동적으로 가져옴
+    try:
+        stock_df = fdr.DataReader(stock_code, '2023-06-01', '2024-07-26')
+    except Exception as e:
+        # 데이터를 가져오지 못했을 때 에러 처리
+        context = {
+            'error': f"Unable to fetch data for stock code: {stock_code}. Error: {str(e)}"
+        }
+        return render(request, 'ai/price_error.html', context)
+
+    # Matplotlib 그래프 생성
+    plt.figure(figsize=(10, 6))
+    stock_df['Close'].plot(title=f'Stock Prices for {stock_code}')
     plt.xlabel('Date')
     plt.ylabel('Close Price')
-    plt.show()
+    plt.tight_layout()
+
+    # 그래프를 메모리에 저장
+    buffer = io.BytesIO()
+    plt.savefig(buffer, format='png')
+    buffer.seek(0)
+    plt.close()
+
+    # 그래프를 base64로 인코딩
+    graph_base64 = base64.b64encode(buffer.getvalue()).decode('utf-8')
+    buffer.close()
+
+    # 템플릿에 전달할 컨텍스트 데이터
+    context = {
+        'graph': graph_base64,
+        'stock_code': stock_code
+    }
+
+    return render(request, 'ai/price.html', context)
+
 
 
 
