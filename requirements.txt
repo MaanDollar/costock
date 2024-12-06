@@ -10,3 +10,4 @@ sqlparse==0.5.2
 urllib3==2.2.3
 python-dotenv==1.0.1
 mysqlclient==2.2.6
+matplotlib~=3.8.4

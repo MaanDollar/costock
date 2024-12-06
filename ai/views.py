@@ -1,7 +1,19 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.conf import settings
-from .models import Stock
+from .models import Stock, StockCorrelation
 import requests
+import FinanceDataReader as fdr
+import matplotlib.pyplot as plt
+
+def price(request):
+    naver_df = fdr.DataReader('035420', '2023-06-01', '2024-07-26')
+
+    naver_df['Close'].plot(title='NAVER Stock Prices')
+    plt.xlabel('Date')
+    plt.ylabel('Close Price')
+    plt.show()
+
+
 
 def add_ai(request):
     if request.method == 'POST':
