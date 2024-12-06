@@ -87,7 +87,7 @@ def articles(request):
     try:
         ######practice####
         stock_code1 = "005930"
-        stock_code2 = "000660"
+        stock_code2 = "000150"
         search_query = f"{stock_code1} {stock_code2}"
 
         api_url = "https://openapi.naver.com/v1/search/news.json"

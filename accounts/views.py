@@ -11,7 +11,7 @@ def current_user(request):
     if not request.user.is_authenticated:
         return JsonResponse({'username': None})
     user = request.user
-    #프로필 사진 가져오기
+
     try:
         kakao_account = user.socialaccount_set.filter(provider='kakao').first()
         extra_data = kakao_account.extra_data if kakao_account else {}
@@ -19,6 +19,16 @@ def current_user(request):
     except Exception as e:
         profile_image = ""
 
+    # DB에 사용자 정보 저장 또는 업데이트
+    try:
+        user_record, created = User.objects.update_or_create(
+            nickname=user.username,  # 사용자 이름을 닉네임으로 사용
+            defaults={
+                'profile_image': profile_image,  # 프로필 사진 업데이트
+            }
+        )
+    except Exception as e:
+        return JsonResponse({'error': f'Failed to save user info: {str(e)}'}, status=500)
 
     return JsonResponse({
         'username': user.username,
