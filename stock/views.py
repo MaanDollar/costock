@@ -57,7 +57,7 @@ def add_recommended(request):
             price=float(price)
         )
 
-    return JsonResponse({'status': 'success', 'message': 'success'}
+    return JsonResponse({'status': 'success', 'message': 'success'})
 
 def delete_recommended(request, stock_id):
     stock = get_object_or_404(Recommended, id=stock_id)
