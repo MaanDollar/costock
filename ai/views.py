@@ -4,12 +4,14 @@ from .models import Stock, StockCorrelation
 import requests
 import FinanceDataReader as fdr
 from django.http import JsonResponse
+from datetime import datetime, timedelta
 
 
 def price(request, stock_code):
     try:
-
-        stock_df = fdr.DataReader(stock_code, '2023-06-01', '2024-07-26')
+        today = datetime.now().strftime('%Y-%m-%d')
+        before = (datetime.now() - timedelta(days=90)).strftime('%Y-%m-%d')
+        stock_df = fdr.DataReader(stock_code, before, today)
 
         latest_data = stock_df.iloc[-1]
         close_price = latest_data['Close']
