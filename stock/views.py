@@ -4,6 +4,27 @@ from django.conf import settings
 from .models import Owned, Recommended
 import requests
 
+
+def list_owned(request):
+    try:
+        stocks = Owned.objects.all()
+        return JsonResponse({
+            'status': 'success',
+            'data': {
+                'stocks': [
+                    {
+                        'id': stock.id,
+                        'code': stock.code,
+                        'quantity': stock.quantity,
+                        'price': stock.price
+                    } for stock in stocks
+                ]
+            }
+        })
+    except Exception as e:
+        return JsonResponse({'status': 'error', 'message': str(e)}, status=500)
+
+
 def add_owned(request):
     if request.method == 'POST':
 
@@ -32,11 +53,9 @@ def add_owned(request):
 
 
 def modify_owned(request, stock_id):
-
     stock = get_object_or_404(Owned, id=stock_id)
 
     if request.method == 'POST':
-
         code = request.POST.get('code')
         quantity = request.POST.get('quantity')
         price = request.POST.get('price')
@@ -48,6 +67,7 @@ def modify_owned(request, stock_id):
 
     return JsonResponse({'status': 'success', 'message': 'success'})
 
+
 def delete_owned(request, stock_id):
     stock = get_object_or_404(Owned, id=stock_id)
 
@@ -56,6 +76,23 @@ def delete_owned(request, stock_id):
 
     return JsonResponse({'status': 'success', 'message': 'success'})
 
+
+def list_recommended(request):
+    try:
+        stocks = Recommended.objects.all()
+        return JsonResponse({
+            'status': 'success',
+            'data': {
+                'stocks': [
+                    {
+                        'id': stock.id,
+                        'code': stock.code
+                    } for stock in stocks
+                ]
+            }
+        })
+    except Exception as e:
+        return JsonResponse({'status': 'error', 'message': str(e)}, status=500)
 
 def add_recommended(request):
     if request.method == 'POST':
@@ -77,6 +114,7 @@ def add_recommended(request):
             return JsonResponse({'status': 'error', 'message': str(e)}, status=500)
 
     return JsonResponse({'status': 'error', 'message': 'Invalid request method.'}, status=405)
+
 
 def delete_recommended(request, stock_id):
     stock = get_object_or_404(Recommended, id=stock_id)
