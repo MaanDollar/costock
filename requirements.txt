@@ -2,6 +2,7 @@ appdirs==1.4.4
 asgiref==3.8.1
 atomicwrites==1.4.0
 axios==0.4.0
+beautifulsoup4==4.12.3
 charset-normalizer==3.4.0
 Django==5.1.3
 django-allauth==65.2.0
@@ -12,6 +13,7 @@ idna==3.10
 jsonpointer==2.1
 mysqlclient==2.2.6
 oauthlib==3.2.2
+plotly==5.24.1
 protobuf==3.20.3
 pyasn1-modules==0.2.8
 pyls-spyder==0.4.0
