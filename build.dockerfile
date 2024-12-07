@@ -1,4 +1,4 @@
-FROM python:3
+FROM python:3.12
 LABEL author="Suhyun Park <me@shiftpsh.com>"
 
 # Setting working directory. All the path will be relative to WORKDIR
