@@ -7,19 +7,19 @@ import requests
 def add_owned(request):
     if request.method == 'POST':
 
-        name = request.POST.get('name')
+        code = request.POST.get('code')
         quantity = request.POST.get('quantity')
         price = request.POST.get('price')
 
-        if Owned.objects.filter(name=name).exists():
+        if Owned.objects.filter(code=code).exists():
             return JsonResponse({
                 'status': 'error',
-                'message': f'Stock with name "{name}" already exists.'
+                'message': f'Stock with code "{code}" already exists.'
             }, status=400)
 
         try:
             Owned.objects.create(
-                name=name,
+                code=code,
                 quantity=int(quantity),
                 price=float(price)
             )
@@ -37,11 +37,11 @@ def modify_owned(request, stock_id):
 
     if request.method == 'POST':
 
-        name = request.POST.get('name')
+        code = request.POST.get('code')
         quantity = request.POST.get('quantity')
         price = request.POST.get('price')
 
-        stock.name = name
+        stock.code = code
         stock.quantity = int(quantity)
         stock.price = float(price)
         stock.save()
@@ -59,17 +59,17 @@ def delete_owned(request, stock_id):
 
 def add_recommended(request):
     if request.method == 'POST':
-        name = request.POST.get('name')
+        code = request.POST.get('code')
 
-        if Recommended.objects.filter(name=name).exists():
+        if Recommended.objects.filter(code=code).exists():
             return JsonResponse({
                 'status': 'error',
-                'message': f'Stock with name "{name}" already exists.'
+                'message': f'Stock with code "{code}" already exists.'
             }, status=400)
 
         try:
             Recommended.objects.create(
-                name=name,
+                code=code,
             )
             return JsonResponse({'status': 'success', 'message': 'Stock added successfully.'})
 
