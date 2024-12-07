@@ -5,6 +5,7 @@ import requests
 import FinanceDataReader as fdr
 from django.http import JsonResponse
 
+
 def price(request, stock_code):
     try:
 
@@ -31,6 +32,7 @@ def price(request, stock_code):
         return JsonResponse({
             'error': f"Unable to fetch data for stock code: {stock_code}. Error: {str(e)}"
         }, status=500)
+
 
 def correlations(request, stock_code1, stock_code2):
     try:
@@ -60,6 +62,7 @@ def correlations(request, stock_code1, stock_code2):
     except Exception as e:
         # 에러 발생 시 JSON 에러 메시지 반환
         return JsonResponse({"error": str(e)}, status=400)
+
 
 def articles(request):
     try:
@@ -99,30 +102,30 @@ def articles(request):
             "articles": article,
         }
 
-        #return JsonResponse(response_data)
+        # return JsonResponse(response_data)
         return render(request, "ai/articles.html", response_data)
 
     except Exception as e:
         return JsonResponse({"error": str(e)}, status=500)
 
-#(주식 종목, 코드) 반환 함수
+
+# (주식 종목, 코드) 반환 함수
 def stock_list(request):
     try:
         krx_stocks = fdr.StockListing('KRX')
 
-        stocks = krx_stocks[['Name', 'Symbol']].to_dict('records')
+        stocks = krx_stocks[['Name', 'Code', 'Close', 'Changes']].to_dict('records')
 
-        '''
-        위 코드 형식
-        [
-            {'Name': '삼성전자', 'Symbol': '005930'},
-            {'Name': 'SK하이닉스', 'Symbol': '000660'},
-            {'Name': '현대차', 'Symbol': '005380'}
-            ...
-        ]
-        '''
-
-        return JsonResponse({'status': 'success', 'stocks': stocks})
+        return JsonResponse({'status': 'success', 'stocks': [
+            {
+                'name': stock['Name'],
+                'code': stock['Code'],
+                'close': int(stock['Close']),
+                'changes': stock['Changes'],
+                "previous_close": int(stock['Close']) - stock['Changes'],
+            }
+            for stock in stocks
+        ]})
 
     except Exception as e:
         # 에러 처리
