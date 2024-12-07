@@ -5,7 +5,7 @@ LABEL author="Suhyun Park <me@shiftpsh.com>"
 WORKDIR /usr/src/app
 
 RUN curl https://sh.rustup.rs -sSf | sh -s -- -y
-RUN export PATH="$HOME/.cargo/bin:$PATH"
+ENV PATH="/root/.cargo/bin:${PATH}"
 
 COPY requirements.txt ./
 RUN pip install -r requirements.txt
