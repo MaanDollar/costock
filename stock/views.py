@@ -26,13 +26,16 @@ def list_owned(request):
 
 
 def add_owned(request):
+    if request.user.is_anonymous:
+        return JsonResponse({'status': 'error', 'message': 'Login required.'}, status=401)
+
     if request.method == 'POST':
 
         code = request.POST.get('code')
         quantity = request.POST.get('quantity')
         price = request.POST.get('price')
 
-        if Owned.objects.filter(code=code).exists():
+        if Owned.objects.filter(code=code, customer_id=request.user.id).exists():
             return JsonResponse({
                 'status': 'error',
                 'message': f'Stock with code "{code}" already exists.'
@@ -42,7 +45,8 @@ def add_owned(request):
             Owned.objects.create(
                 code=code,
                 quantity=int(quantity),
-                price=float(price)
+                price=float(price),
+                customer_id=request.user.id
             )
             return JsonResponse({'status': 'success', 'message': 'Stock added successfully.'})
 
@@ -53,7 +57,12 @@ def add_owned(request):
 
 
 def modify_owned(request, stock_id):
+    if request.user.is_anonymous:
+        return JsonResponse({'status': 'error', 'message': 'Login required.'}, status=401)
+
     stock = get_object_or_404(Owned, id=stock_id)
+    if stock.customer_id != request.user.id:
+        return JsonResponse({'status': 'error', 'message': 'Permission denied.'}, status=403)
 
     if request.method == 'POST':
         code = request.POST.get('code')
@@ -69,7 +78,12 @@ def modify_owned(request, stock_id):
 
 
 def delete_owned(request, stock_id):
+    if request.user.is_anonymous:
+        return JsonResponse({'status': 'error', 'message': 'Login required.'}, status=401)
+
     stock = get_object_or_404(Owned, id=stock_id)
+    if stock.customer_id != request.user.id:
+        return JsonResponse({'status': 'error', 'message': 'Permission denied.'}, status=403)
 
     if request.method == 'POST':
         stock.delete()
@@ -95,10 +109,13 @@ def list_recommended(request):
         return JsonResponse({'status': 'error', 'message': str(e)}, status=500)
 
 def add_recommended(request):
+    if request.user.is_anonymous:
+        return JsonResponse({'status': 'error', 'message': 'Login required.'}, status=401)
+
     if request.method == 'POST':
         code = request.POST.get('code')
 
-        if Recommended.objects.filter(code=code).exists():
+        if Recommended.objects.filter(code=code, customer_id=request.user.id).exists():
             return JsonResponse({
                 'status': 'error',
                 'message': f'Stock with code "{code}" already exists.'
@@ -107,6 +124,7 @@ def add_recommended(request):
         try:
             Recommended.objects.create(
                 code=code,
+                customer_id=request.user.id
             )
             return JsonResponse({'status': 'success', 'message': 'Stock added successfully.'})
 
@@ -117,7 +135,13 @@ def add_recommended(request):
 
 
 def delete_recommended(request, stock_id):
+    if request.user.is_anonymous:
+        return JsonResponse({'status': 'error', 'message': 'Login required.'}, status=401)
+
     stock = get_object_or_404(Recommended, id=stock_id)
+
+    if stock.customer_id != request.user.id:
+        return JsonResponse({'status': 'error', 'message': 'Permission denied.'}, status=403)
 
     if request.method == 'POST':
         stock.delete()
