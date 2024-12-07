@@ -60,8 +60,6 @@ def delete_owned(request, stock_id):
 def add_recommended(request):
     if request.method == 'POST':
         name = request.POST.get('name')
-        quantity = request.POST.get('quantity')
-        price = request.POST.get('price')
 
         if Recommended.objects.filter(name=name).exists():
             return JsonResponse({
@@ -72,8 +70,6 @@ def add_recommended(request):
         try:
             Recommended.objects.create(
                 name=name,
-                quantity=int(quantity),
-                price=float(price)
             )
             return JsonResponse({'status': 'success', 'message': 'Stock added successfully.'})
 
