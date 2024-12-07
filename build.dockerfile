@@ -4,6 +4,8 @@ LABEL author="Suhyun Park <me@shiftpsh.com>"
 # Setting working directory. All the path will be relative to WORKDIR
 WORKDIR /usr/src/app
 
+RUN curl https://sh.rustup.rs -sSf | sh
+
 COPY requirements.txt ./
 RUN pip install -r requirements.txt
 
